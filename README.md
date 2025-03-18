@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# URL Shortener Service
 
-## Getting Started
+URL을 짧게 만들어주는 서비스입니다.
 
-First, run the development server:
+## 기술 스택
+
+- Next.js
+- Prisma
+- SQLite (개발 환경)
+- MongoDB (운영 환경)
+
+## 시작하기
+
+### 사전 요구사항
+
+- Node.js 18.0.0 이상
+- npm 또는 yarn
+- Docker (운영 환경용)
+
+### 설치
+
+1. 저장소 클론
+```bash
+git clone https://github.com/m320ng/shortlink
+cd shortlink
+```
+
+2. 의존성 설치
+```bash
+npm i
+# or
+yarn
+```
+
+3. 환경 변수 설정
+`.env` 파일 생성 (개발 환경):
+```env
+DATABASE_PROVIDER="sqlite"
+DATABASE_URL="file:./dev.db"
+```
+
+`.env.production` 파일 생성 (운영 환경):
+```env
+DATABASE_PROVIDER="mongodb"
+DATABASE_URL="mongodb://username:password@host:27017/dbname"
+```
+
+4. 데이터베이스 설정
+```bash
+# 개발 환경
+npm run prisma:dev
+
+# 운영 환경
+npm run prisma:deploy
+```
+
+### 개발 서버 실행
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 운영 환경 설정
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### MongoDB 설정
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. MongoDB 컨테이너 실행:
+```bash
+docker-compose up -d
+```
 
-## Learn More
+2. MongoDB 관리자 계정으로 접속:
+```bash
+mongosh mongodb://admin:admin123@mongodb:27017/admin
+```
 
-To learn more about Next.js, take a look at the following resources:
+3. 애플리케이션용 사용자 생성:
+```javascript
+use admin
+db.createUser({
+    user: "shortlink",
+    pwd: "shortlink11",
+    roles: [
+        { role: "readWrite", db: "shortlink" },
+        { role: "dbAdmin", db: "shortlink" }
+    ]
+})
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 배포
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run build
+npm start
+```
 
-## Deploy on Vercel
+## 주요 기능
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- URL 단축
+- 단축 URL 통계
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
