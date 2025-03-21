@@ -1,0 +1,12 @@
+services:
+  shortlink:
+    container_name: shortlink
+    image: shortlink:latest
+    restart: always
+    user: "1000:1000"
+    networks:
+      - proxy-net
+
+networks:
+  proxy-net:
+    external: true

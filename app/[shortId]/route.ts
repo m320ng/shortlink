@@ -3,12 +3,14 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
     request: Request,
-    { params }: { params: { shortId: string } }
+    { params }: { params: Promise<{ shortId: string }> }
 ) {
+    const { shortId } = await params;
+
     try {
         const shortLink = await prisma.shortLink.findUnique({
             where: {
-                shortId: params.shortId,
+                shortId: shortId,
             },
         });
 
