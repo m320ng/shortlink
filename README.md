@@ -1,6 +1,8 @@
 # URL Shortener Service
 
+<https://s.heyo.me>  
 URL을 짧게 만들어주는 서비스입니다.
+
 
 ## 기술 스택
 
@@ -87,13 +89,6 @@ db.createUser({
         { role: "dbAdmin", db: "shortlink" }
     ]
 })
-```
-
-### 배포
-
-```bash
-npm run build
-npm start
 ```
 
 ## 주요 기능
