@@ -4,7 +4,14 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm install
+
 COPY . .
+# .env.production을 .env로 복사
+COPY .env.production .env
+COPY ./prisma/schema.prod.prisma ./prisma/schema.prisma
+
+# Prisma 클라이언트 생성
+RUN npx prisma generate
 RUN npm run build
 
 # 실행 스테이지
@@ -13,7 +20,7 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# 먼저 파일들을 복사
+# 나머지 파일들 복사
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public

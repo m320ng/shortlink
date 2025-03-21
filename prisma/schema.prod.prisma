@@ -9,16 +9,14 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model ShortLink {
-  id        String   @id @default(cuid())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   url       String
   shortId   String   @unique
   createdAt DateTime @default(now())
   clicks    Int      @default(0)
-
-  @@index([shortId])
 }
