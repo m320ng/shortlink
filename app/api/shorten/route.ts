@@ -24,10 +24,21 @@ export async function POST(request: Request) {
             );
         }
 
-        // 5자 길이의 짧은 ID 생성
-        const shortId = nanoid(5);
+        // 기존 URL이 있는지 확인
+        const existingLink = await prisma.shortLink.findFirst({
+            where: {
+                url: url,
+            },
+        });
 
-        // 중복 체크 및 재시도 로직
+        // 기존 URL이 있으면 해당 shortId 반환
+        if (existingLink) {
+            const shortUrl = `${request.headers.get('host')}/${existingLink.shortId}`;
+            return NextResponse.json({ shortUrl });
+        }
+
+        // 새로운 단축 URL 생성
+        let shortId = nanoid(5);
         let attempts = 0;
         const maxAttempts = 3;
 
@@ -54,6 +65,8 @@ export async function POST(request: Request) {
                             { status: 500 }
                         );
                     }
+                    // 새로운 shortId 생성하여 재시도
+                    shortId = nanoid(5);
                     continue;
                 }
                 throw error;
